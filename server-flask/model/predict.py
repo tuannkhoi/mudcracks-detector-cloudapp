@@ -69,7 +69,7 @@ def main(image_filename):
 
     cv2.imwrite("Predicted-img.jpg", image_cv)
     window_name = 'image'
-    cv2.imshow(window_name, image_cv) 
+    cv2.imshow(window_name, image_cv)
     cv2.waitKey()
 
 

@@ -32,11 +32,11 @@ exports.getPredictions = async (req, res, next) => {
 	const imagePath = await downloadImage(url, nasa_id);
 
 	// Step 4: Using image, get predictions Flask server
-	// const predictions = getMudCracksPredictions(imagePath);
+	const predictions = getMudCracksPredictions(imagePath);
 
 	res.status(200).json({
 		message: 'success',
 		// data: predictions,
-		data: imagePath
+		data: predictions
 	})
 }
