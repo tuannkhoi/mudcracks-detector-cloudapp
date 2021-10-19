@@ -72,6 +72,21 @@ def main(image_filename):
     cv2.imshow(window_name, image_cv) 
     cv2.waitKey()
 
+
+def get_model():
+    # Load a TensorFlow model
+    graph_def = tf.compat.v1.GraphDef()
+    with tf.io.gfile.GFile(MODEL_FILENAME, 'rb') as f:
+        graph_def.ParseFromString(f.read())
+
+    # Load labels
+    with open(LABELS_FILENAME, 'r') as f:
+        labels = [l.strip() for l in f.readlines()]
+
+    od_model = TFObjectDetection(graph_def, labels)
+    return od_model
+
+
 if __name__ == '__main__':
     if len(sys.argv) <= 1:
         print('USAGE: {} image_filename'.format(sys.argv[0]))
