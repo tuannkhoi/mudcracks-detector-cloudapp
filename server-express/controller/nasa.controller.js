@@ -30,12 +30,12 @@ exports.getPredictions = async (req, res, next) => {
 
 	// TODO Step 3: Using image's meta data, download image to NASA images (local folder)
 	const imagePath = await downloadImage(url, nasa_id);
-	console.log('Image path is ', imagePath);
+	// console.log('Image path is ', imagePath);
 
 	// TODO Step 4: Using image, get predictions Flask server
 	const flaskResponse = await getMudCracksPredictions(imagePath);
 	const predictions = flaskResponse['data'][0]['boundingBox'];
-	console.log(predictions);
+	// console.log(predictions);
 
 	res.status(200).json({
 		message: 'success',
