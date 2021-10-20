@@ -5,7 +5,6 @@ const download = require('image-downloader');
  * @param {string} nasa_id the image's nasa_id
  * @returns {string} options.dest (local) path to the downloaded image
  */
-
 exports.downloadImage = async (url, nasa_id) => {
 	const options = {
 		url,
