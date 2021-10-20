@@ -22,21 +22,33 @@ app = Flask(__name__)
 def index():
     return 'Mud cracks detector - Flask server'
 
-@app.route('/predict', methods=['GET'])
+@app.route('/predict', methods=['GET', 'POST'])
 def infer_image():
-    if 'file' not in request.files:
-        return "Please try again. The Image doesn't exist"
+    # # ! Case 1: Receive an image file
+    # # Catch the image from a request
+    # if 'file' not in request.files:
+    #     return "Please try again. The Image doesn't exist"
     
-    file = request.files.get('file')
+    # file = request.files.get('file')
 
-    if not file:
-        return
+    # if not file:
+    #     return
 
-    img_bytes = file.read()
-    img = Image.open(io.BytesIO(img_bytes))
+    # # Read the image
+    # img_bytes = file.read()
 
-
-    return jsonify(prediction=predict_result(img))
+    # # Prepare the image 
+    # img = Image.open(io.BytesIO(img_bytes))
+    # ! Case 2: Receive an image path
+    path = request.args.get('imagePath')
+    # print(path)
+    img = Image.open(path)
+    # Return as a JSON format
+    result = predict_result(img)
+    # print(type(result))
+    # print(result)
+    # return jsonify(prediction=predict_result(img))
+    return jsonify(result)
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')

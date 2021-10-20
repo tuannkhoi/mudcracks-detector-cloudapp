@@ -3,15 +3,15 @@ const download = require('image-downloader');
 /**
  * @param {string} url the image's url
  * @param {string} nasa_id the image's nasa_id
- * @returns {string} imagePath (local) path to the downloaded image
+ * @returns {string} options.dest (local) path to the downloaded image
  */
 
 exports.downloadImage = async (url, nasa_id) => {
 	const options = {
 		url,
-		dest: `./../NASA images/${nasa_id}.jpg`
+		dest: `../NASA images/${nasa_id}.jpg`
 	}
-	download.image(options)
+	await download.image(options)
 		.then(({ filename }) => {
 			console.log('Saved to ', filename);
 		})
