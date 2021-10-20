@@ -66,7 +66,9 @@ def main(image_filename):
         b = np.array([x1, y1, x2, y2]).astype(int)
         cv2.putText(image_cv, label, (b[0], b[1] - 10), cv2.FONT_HERSHEY_PLAIN, 1, (100, 0, 0), 3)
         cv2.putText(image_cv, label, (b[0], b[1] - 10), cv2.FONT_HERSHEY_PLAIN, 1, (255, 255, 255), 1)
-
+    
+    print("Type of image_cv is ", type(image_cv))
+    
     cv2.imwrite("Predicted-img.jpg", image_cv)
     window_name = 'image'
     cv2.imshow(window_name, image_cv)

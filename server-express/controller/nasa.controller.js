@@ -6,17 +6,22 @@ exports.getPredictions = async (req, res, next) => {
 	/**
 	 * Get input from user
 	 * Use input, get image's URL and nasa_id from Nasa API
-	 * if nasa_id is found in Redis
-	 * 		data = Redis response
-	 * else if nasa_id is found in S3
-	 * 		data = S3 response
-	 * 		save data to Redis
+	 * if nasa_id is found in S3
+	 * 		serve data (imgLink) from S3
+	 * else if nasa_id is found in MongoDB
+	 * 		download image as "nasa_id.jpg"
+	 * 		get predictions data from MongoDB
+	 * 		draw new image with predictions data
+	 * 		upload image to S3
+	 * 		serve data (imgLink) from S3
 	 * else
 	 * 		download image as "nasa_id.jpg"
 	 * 		get predictions from Flask server
 	 * 		data = Flask response
-	 * 		save data to Redis & S3
-	 * Send data to client
+	 * 		draw new image and replace the current "nasa_id.jpg"
+	 * 		upload predictions to MongoDB and new image to S3
+	 * 		image_link = S3 response
+	 * Send image_link to client
 	 */
 	// TODO Step 1: Get input from user
 	const userInput = req.query.search;
@@ -35,7 +40,7 @@ exports.getPredictions = async (req, res, next) => {
 	// TODO Step 4: Using image, get predictions Flask server
 	const flaskResponse = await getMudCracksPredictions(imagePath);
 	const predictions = flaskResponse['data'][0]['boundingBox'];
-	// console.log(predictions);
+	console.log(predictions);
 
 	res.status(200).json({
 		message: 'success',
