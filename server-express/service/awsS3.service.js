@@ -10,6 +10,6 @@ exports.readFromS3 = async (nasa_id) => {
 	params.Key = nasa_id;
 }
 
-exports.uploadToS3 = async (nasa_id, imagePath) => {
+exports.uploadToS3 = async (nasa_id) => {
 	params.Key = nasa_id;
 }
