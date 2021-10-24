@@ -1,18 +1,22 @@
 require('dotenv').config();
 const AWS = require('aws-sdk');
+const { TooManyRequests } = require('http-errors');
 const s3 = new AWS.S3({apiVersion: '2006-03-01'});
 const bucketName = 'nasa-mudcracks';
 
 async function checkObject (bucket, objectKey) {
+	var success = true;
 	try {
 	  const params = {
 		Bucket: bucket,
 		Key: objectKey 
 	  }
-  
-	  const data = await s3.headObject(params).promise();
-  
-	  return "File Found in S3";
+
+	  const data = await s3.headObject(params).promise().catch((error) => {
+		success = false;
+	  });
+
+	  return success;
 	} catch (e) {
 	  throw new Error(`Could not retrieve file from S3: ${e.message}`)
 	}

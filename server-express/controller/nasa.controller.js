@@ -3,6 +3,7 @@ const { downloadImage } = require('../service/downloadImage.service')
 const { getMudCracksPredictions } = require('../service/mudcracks.service');
 const { getUrlFromS3, checkFromS3, readFromS3, uploadToS3 } = require('../service/awsS3.service');
 const { readFromMongo, uploadToMongo } = require('../service/mongoDB.service');
+const { checkFromDynamo } = require('../service/dynamoDB.service');
 
 // exports.getPredictions = async (req, res, next) => {
 // 	/**
@@ -78,18 +79,24 @@ exports.getPredictions = async (req, res, next) => {
 	// TODO if imageDate[i]['links'].length > 1 => skip
 	const url = imageData[3]['links'][0]['href'];
 	// const nasa_id = imageData[3]['data'][0]['nasa_id'];	
-	const nasa_id = 'PIA1412.jpg';
+	const nasa_id = 'PIA14121';
+	var imagePath;
 	
 	// if nasa_id is found in s3
-	if(checkFromS3(nasa_id)){
+	if(await checkFromS3(nasa_id)){
 		//serve from s3
-		const predictedImageUrl = await getUrlFromS3(nasa_id);
-		const imagePath = await downloadImage(predictedImageUrl, nasa_id);
-		res.status(200).json(imagePath);
-	}
-	else{
+		// const predictedImageUrl = await getUrlFromS3(nasa_id);
+		// imagePath = await downloadImage(predictedImageUrl, nasa_id);
 
 	}
+	else if (await checkFromDynamo(nasa_id)) {
+		imagePath = "Else if";
+	}
+	else {
+		imagePath = "Else";
+	}
+
+	res.status(200).json(imagePath);
 
 
 	
