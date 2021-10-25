@@ -7,8 +7,21 @@ const { checkFromDynamo, readFromDynamo, uploadToDynamo } = require('../service/
 const Jimp = require('jimp');
 const { Canvas, createCanvas, Image, ImageData, loadImage } = require('canvas');
 const { JSDOM } = require('jsdom');
+const { writeFileSync } = require('fs');
 const cv = require('../public/javascripts/libraries/opencv');
 
+/**
+ * Return query as array to use array.reduce with async/await.
+ * @param query 
+ */
+ function returnArray(query){
+    if(!Array.isArray(query)){
+        return [query];
+    }
+    else{
+        return query;
+    }
+}
 
 // exports.getPredictions = async (req, res, next) => {
 // 	/**
@@ -144,9 +157,9 @@ exports.getPredictions = async (req, res, next) => {
 
 	// TODO Step 2: Using input, get image's link(s) & nasa_id(s) from NASA API
 	const imageData = await getNASAData(userInput);
-	// TODO if imageDate[i]['links'].length > 1 => skip
-	const url = imageData[4]['links'][0]['href'];
-	const nasa_id = imageData[4]['data'][0]['nasa_id'];	
+	// TODO if imageData[i]['links'].length > 1 => skip
+	const url = imageData[5]['links'][0]['href'];
+	const nasa_id = imageData[5]['data'][0]['nasa_id'] + '.jpg';	
 	var s3Path;
 	
 	// if nasa_id is found in s3
@@ -164,10 +177,22 @@ exports.getPredictions = async (req, res, next) => {
 	else {
 		const localPath = await downloadImage(url, nasa_id);	
 		const flaskResponse = await getMudCracksPredictions(localPath);
-		const predictions = await [flaskResponse['data'][0]];
+		const predictions = await returnArray(flaskResponse['data'][0]);
 		await uploadToDynamo(predictions, nasa_id);
 		s3Path = await uploadToS3(localPath, nasa_id);
 	}
 
 	res.status(200).json(s3Path);
+}
+
+exports.getPredictions = async (req, res, next) =>{
+	// TODO Step 1: Get input from user
+	const userInput = req.query.search;
+
+	// TODO Step 2: Using input, get image's link(s) & nasa_id(s) from NASA API
+	const imageData = await getNASAData(userInput);
+	console.log(imageData);
+	var s3Paths = [];
+
+	res.status(200).json(s3Paths);
 }

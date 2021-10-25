@@ -30,7 +30,7 @@ const Jimp = require('jimp');
         Jimp.read(url)
         .then(image=>{
             image
-            .write(`../NASA images/${nasa_id}`);
+            .write(imagePath);
             console.log(`${url} downloaded`);
             resolve(imagePath);
         })

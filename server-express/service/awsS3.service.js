@@ -48,7 +48,7 @@ function getUrl(bucket,objectKey){
 
 		const region = 'ap-southeast-2';
 	
-		resolve(JSON.stringify(`https://${params.Bucket}.s3.${region}.amazonaws.com/${params.Key}`)) 
+		resolve(`https://${params.Bucket}.s3.${region}.amazonaws.com/${params.Key}`) 
 	})
 }
 
@@ -82,5 +82,5 @@ exports.uploadToS3 = async (localPath, nasa_id) => {
 	  console.log("Successfully uploaded data to " + bucket + "/" + nasa_id);
 	});
 	
-	return JSON.stringify(`https://${params.Bucket}.s3.${region}.amazonaws.com/${params.Key}`);
+	return (`https://${params.Bucket}.s3.${region}.amazonaws.com/${params.Key}`);
 }
