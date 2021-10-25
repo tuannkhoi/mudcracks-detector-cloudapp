@@ -9,6 +9,10 @@ const { Canvas, createCanvas, Image, ImageData, loadImage } = require('canvas');
 const { JSDOM } = require('jsdom');
 const { writeFileSync } = require('fs');
 const cv = require('../public/javascripts/libraries/opencv');
+const fs = require('fs');
+const path = require('path');
+
+const routePath = `../NASA images/`;
 
 /**
  * Return query as array to use array.reduce with async/await.
@@ -23,50 +27,32 @@ const cv = require('../public/javascripts/libraries/opencv');
     }
 }
 
-// exports.getPredictions = async (req, res, next) => {
-// 	/**
-// 	 * Get input from user
-// 	 * Use input, get image's URL and nasa_id from Nasa API
-// 	 * if nasa_id is found in S3
-// 	 * 		serve data (imgLink) from S3
-// 	 * else if nasa_id is found in MongoDB
-// 	 * 		download image as "nasa_id.jpg"
-// 	 * 		get predictions data from MongoDB
-// 	 * 		draw new image with predictions data
-// 	 * 		upload processed image to S3
-// 	 * 		serve data (imgLink) from S3
-// 	 * else
-// 	 * 		download image as "nasa_id.jpg"
-// 	 * 		get predictions from Flask server
-// 	 * 		data = Flask response
-// 	 * 		draw new image and replace the current "nasa_id.jpg"
-// 	 * 		upload predictions to MongoDB and processed image to S3
-// 	 * 		serve data (imgLink) from S3
-// 	 * Send image_link to client
-// 	 */
-// 	// TODO Step 1: Get input from user
-// 	const userInput = req.query.search;
+/**
+ * Remove all files in the folder path corresponding to the route path.
+ * @param routePath 
+ */
+ function removeFiles(routePath){
+    return new Promise((resolve, reject)=>{
 
-// 	// TODO Step 2: Using input, get image's link(s) & nasa_id(s) from NASA API
-// 	const imageData = await getNASAData(userInput);
-// 	// TODO if imageDate[i]['links'].length > 1 => skip
-// 	const url = imageData[3]['links'][0]['href'];
-// 	const nasa_id = imageData[3]['data'][0]['nasa_id'];	
-	
+        // directoryPath = getLocalPath(routePath);
+		directoryPath = routePath;
 
-// 	// TODO Step 3: Using image's meta data, download image to NASA images (local folder)
-// 	const imagePath = await downloadImage(url, nasa_id);
+        fs.readdir(directoryPath, async function (err, files) {
+            if (err) {
+                console.log('Unable to scan directory: ' + err)
+                reject(err)
+            } 
 
-// 	// TODO Step 4: Using image, get predictions Flask server
-// 	const flaskResponse = await getMudCracksPredictions(imagePath);
-// 	const predictions = flaskResponse['data'][0]['boundingBox'];
-// 	console.log(predictions);
-
-// 	res.status(200).json({
-// 		message: 'success',
-// 		data: predictions
-// 	});
-// }
+            for (const file of files){
+                fs.unlink(path.join(directoryPath, file), err => {
+                    if (err) reject(err);
+                  });
+            }
+            resolve();
+        });
+        
+    })
+}
 
 /**
  * Use jsdom and node-canvas to define global variables,
@@ -172,7 +158,7 @@ async function getPrediction(imageData) {
 	else {
 		const localPath = await downloadImage(url, nasa_id);	
 		const flaskResponse = await getMudCracksPredictions(localPath);
-		const predictions = await returnArray(flaskResponse['data'][0]);
+		const predictions = await returnArray(flaskResponse['data']);
 		await uploadToDynamo(predictions, nasa_id);
 		s3Path = await uploadToS3(localPath, nasa_id);
 	}
@@ -196,6 +182,8 @@ exports.getPredictions = async (req, res, next) =>{
 		await promise; // wait for the last promise to be resolved
 		s3Paths.push(await getPrediction(image));
 	}, Promise.resolve());
+
+	await removeFiles(routePath);
 
 	res.status(200).json(s3Paths);
 }

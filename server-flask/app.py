@@ -43,6 +43,7 @@ def infer_image():
 
     # ML model predict the image
     predictions = model.predict_image(img)
+    print(predictions)
 
     # Draw bounding box for the image
     # The new image (with bounding box) will replace the current one at path
