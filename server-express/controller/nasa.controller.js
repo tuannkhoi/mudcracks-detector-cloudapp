@@ -131,7 +131,7 @@ const cv = require('../public/javascripts/libraries/opencv');
     });
 }
 
-exports.getPredictions = async (req, res, next) => {
+async function getPrediction(imageData) {
 	/**
 	 * Get input from user
 	 * Use input, get image's URL and nasa_id from Nasa API
@@ -152,14 +152,9 @@ exports.getPredictions = async (req, res, next) => {
 	 * 		serve data (imgLink) from S3
 	 * Send image_link to client
 	 */
-	// TODO Step 1: Get input from user
-	const userInput = req.query.search;
-
-	// TODO Step 2: Using input, get image's link(s) & nasa_id(s) from NASA API
-	const imageData = await getNASAData(userInput);
 	// TODO if imageData[i]['links'].length > 1 => skip
-	const url = imageData[5]['links'][0]['href'];
-	const nasa_id = imageData[5]['data'][0]['nasa_id'] + '.jpg';	
+	const url = imageData['links'][0]['href'];
+	const nasa_id = imageData['data'][0]['nasa_id'] + '.jpg';	
 	var s3Path;
 	
 	// if nasa_id is found in s3
@@ -182,7 +177,7 @@ exports.getPredictions = async (req, res, next) => {
 		s3Path = await uploadToS3(localPath, nasa_id);
 	}
 
-	res.status(200).json(s3Path);
+	return s3Path;
 }
 
 exports.getPredictions = async (req, res, next) =>{
@@ -193,6 +188,11 @@ exports.getPredictions = async (req, res, next) =>{
 	const imageData = await getNASAData(userInput);
 	console.log(imageData);
 	var s3Paths = [];
+
+	await imageData.reduce(async (promise, image) => {     
+		await promise; // wait for the last promise to be resolved
+		s3Paths.push(await getPrediction(image));
+	}, Promise.resolve());
 
 	res.status(200).json(s3Paths);
 }
