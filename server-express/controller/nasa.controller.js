@@ -183,13 +183,16 @@ async function getPrediction(imageData) {
 exports.getPredictions = async (req, res, next) =>{
 	// TODO Step 1: Get input from user
 	const userInput = req.query.search;
+	const start = req.query.start;
+	const end = req.query.end;
 
 	// TODO Step 2: Using input, get image's link(s) & nasa_id(s) from NASA API
 	const imageData = await getNASAData(userInput);
-	console.log(imageData);
+	const slicedImageData = imageData.slice(start, end);
+	console.log(slicedImageData);
 	var s3Paths = [];
 
-	await imageData.reduce(async (promise, image) => {     
+	await slicedImageData.reduce(async (promise, image) => {     
 		await promise; // wait for the last promise to be resolved
 		s3Paths.push(await getPrediction(image));
 	}, Promise.resolve());
