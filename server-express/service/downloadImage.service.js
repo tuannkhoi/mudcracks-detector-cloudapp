@@ -27,7 +27,7 @@ const Jimp = require('jimp');
  exports.downloadImage = (url,nasa_id) => {
     return new Promise((resolve, reject) => {
 		const imagePath = `../NASA images/${nasa_id}`;
-        Jimp.read(url)
+        Jimp.read(encodeURI(url))
         .then(image=>{
             image
             .write(imagePath);

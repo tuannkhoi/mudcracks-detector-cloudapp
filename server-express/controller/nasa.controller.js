@@ -140,7 +140,9 @@ async function getPrediction(imageData) {
 	 */
 	// TODO if imageData[i]['links'].length > 1 => skip
 	const url = imageData['links'][0]['href'];
-	const nasa_id = imageData['data'][0]['nasa_id'] + '.jpg';	
+
+	const nasa_id = imageData['data'][0]['nasa_id'] + '.jpg';
+
 	var s3Path;
 	
 	// if nasa_id is found in s3
@@ -174,13 +176,22 @@ exports.getPredictions = async (req, res, next) =>{
 
 	// TODO Step 2: Using input, get image's link(s) & nasa_id(s) from NASA API
 	const imageData = await getNASAData(userInput);
-	const slicedImageData = imageData.slice(start, end);
+
+	const filteredImageData = imageData.filter(function (image) {
+		return !image['href'].includes('video') &&  !image['href'].includes('audio');
+	})
+	
+
+	const slicedImageData = filteredImageData.slice(start, end);
 	console.log(slicedImageData);
 	var s3Paths = [];
 
 	await slicedImageData.reduce(async (promise, image) => {     
 		await promise; // wait for the last promise to be resolved
-		s3Paths.push(await getPrediction(image));
+		result = await getPrediction(image)
+		if(await result){
+			s3Paths.push(result);
+		}
 	}, Promise.resolve());
 
 	await removeFiles(routePath);

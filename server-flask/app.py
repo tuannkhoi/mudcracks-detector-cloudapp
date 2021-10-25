@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 from PIL import Image
 from flask import Flask, jsonify, request
+from urllib.parse import unquote
 import predict
 
 model = predict.get_model()
