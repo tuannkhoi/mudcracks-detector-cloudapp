@@ -183,7 +183,6 @@ exports.getPredictions = async (req, res, next) =>{
 	
 
 	const slicedImageData = filteredImageData.slice(start, end);
-	console.log(slicedImageData);
 	var s3Paths = [];
 
 	await slicedImageData.reduce(async (promise, image) => {     
@@ -196,5 +195,6 @@ exports.getPredictions = async (req, res, next) =>{
 
 	await removeFiles(routePath);
 
+	console.log("Finished serving s3Paths");
 	res.status(200).json(s3Paths);
 }

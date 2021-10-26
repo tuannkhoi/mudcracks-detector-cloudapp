@@ -28,9 +28,10 @@ const Jimp = require('jimp');
     return new Promise((resolve, reject) => {
 		const imagePath = `../NASA images/${nasa_id}`;
         Jimp.read(encodeURI(url))
-        .then(image=>{
-            image
-            .write(imagePath);
+        .then(async function(image) {
+            await image
+            .writeAsync(imagePath)
+
             console.log(`${url} downloaded`);
             resolve(imagePath);
         })

@@ -17,13 +17,14 @@ exports.uploadToDynamo = async (predictions, nasa_id) => {
         },
     }
 
-    dynamodb.put(params, function(err, data) {
+    await dynamodb.put(params).promise(function(err, data) {
         if (err) {
             console.error("Unable to add item. Error JSON:", JSON.stringify(err, null, 2));
         } else {
-            console.log("Added item:", JSON.stringify(data, null, 2));
         }
     });
+
+    console.log("Successfully uploaded data to DynamoDB: " + DBName + "/" + nasa_id);
 }
 
 exports.readFromDynamo = async (nasa_id) => {
