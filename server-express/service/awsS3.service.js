@@ -74,13 +74,12 @@ exports.uploadToS3 = async (localPath, nasa_id) => {
 	const params = {
 		Bucket: bucket,
 		Key: nasa_id, 
-		Body: fileContent
+		Body: fileContent,
+		ContentType: 'image/jpeg',
 	  }
 
-	const uploadPromise = new AWS.S3({apiVersion: '2006-03-01'}).putObject(params).promise();
-	uploadPromise.then(function(data) {
-	  console.log("Successfully uploaded data to S3 Bucket: " + bucket + "/" + nasa_id);
-	});
+	await new AWS.S3({apiVersion: '2006-03-01'}).putObject(params).promise();
+	console.log("Successfully uploaded data to S3 Bucket: " + bucket + "/" + nasa_id);
 	
 	return (`https://${params.Bucket}.s3.${region}.amazonaws.com/${params.Key}`);
 }
