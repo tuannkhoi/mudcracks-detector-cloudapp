@@ -24,7 +24,7 @@ const Search = styled('div')(({ theme }) => ({
 	},
   }));
   
-  const SearchIconWrapper = styled('div')(({ theme }) => ({
+const SearchIconWrapper = styled('div')(({ theme }) => ({
 	padding: theme.spacing(0, 2),
 	height: '100%',
 	position: 'absolute',
@@ -34,13 +34,14 @@ const Search = styled('div')(({ theme }) => ({
 	justifyContent: 'center',
   }));
   
-  const StyledInputBase = styled(InputBase)(({ theme }) => ({
+const StyledInputBase = styled(InputBase)(({ theme }) => ({
 	color: 'inherit',
 	'& .MuiInputBase-input': {
 	  padding: theme.spacing(1, 1, 1, 0),
 	  // vertical padding + font size from searchIcon
 	  paddingLeft: `calc(1em + ${theme.spacing(4)})`,
 	  transition: theme.transitions.create('width'),
+	  margin: 'dense',
 	  width: '100%',
 	  [theme.breakpoints.up('sm')]: {
 		width: '20ch',
@@ -51,21 +52,43 @@ const Search = styled('div')(({ theme }) => ({
 	},
   }));
 
-export default function SearchBar() {
+export default function SearchBar({setImages}) {
 	const [searchTerm, setSearchTerm] = useState('');
 	const handleTermChange = event => {
 		setSearchTerm(event.target.value);
 	}
+
+	const [limit, setLimit] = useState(4);
+	const handleLimitChange = event => {
+		setLimit(event.target.value);
+	}
+
 	const handleSearch = event => {
-		if (event.key === 'Enter') {
-			console.log(`Request for search term ${searchTerm} sent`);
-			// axios
-			// 	.get('/api/v1/nasa', {
-			// 		params: {
-			// 			search: searchTerm,
-			// 		}
-			// 	})
-		}
+		// if (event.key === 'Enter') {
+		// 	console.log(`Request for search term ${searchTerm} sent`);
+		// 	console.log(typeof parseInt(limit));
+		// 	// axios
+		// 	// 	.get('/api/v1/nasa', {
+		// 	// 		params: {
+		// 	// 			search: searchTerm,
+		// 	// 		}
+		// 	// 	})
+		// }
+		axios
+			.get('http://127.0.0.1:4001/api/v1/nasa', {
+			params: {
+				search: searchTerm,
+				limit,
+			}
+			})
+			.then((response) => {
+				console.log(response);
+				// const { data } = response.data;
+				// setImages(data);
+			})
+			.catch((error) => {
+				console.error(error);
+			})
 	}
 
 	return (
@@ -82,15 +105,23 @@ export default function SearchBar() {
 				Mud Cracks Detector
 			  </Typography>
 			  <Search>
+				<StyledInputBase
+					placeholder="Image number"
+					inputProps={{ 'aria-label': 'number' }}
+					value={limit}
+					onChange={handleLimitChange}
+				/>
+			  </Search>
+			  <Search>
 				<SearchIconWrapper>
 				  <SearchIcon />
 				</SearchIconWrapper>
 				<StyledInputBase
-				  placeholder="Search…"
-				  inputProps={{ 'aria-label': 'search' }}
-				  value={searchTerm}
-				  onChange={handleTermChange}
-				  onKeyPress={handleSearch}
+					placeholder="Search…"
+					inputProps={{ 'aria-label': 'search' }}
+					value={searchTerm}
+					onChange={handleTermChange}
+					onKeyPress={handleSearch}
 				/>
 			  </Search>
 			</Toolbar>
