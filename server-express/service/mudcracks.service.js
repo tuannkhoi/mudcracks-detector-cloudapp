@@ -15,7 +15,11 @@ exports.getMudCracksPredictions = async (imagePath) => {
 		params: {
 			imagePath: imagePath,
 		}
+	})
+	.catch((error)=>{
+		return new Error("Can not connect to Flask server: " + error.message);
 	});
+
 	return predictions;
 }
 
