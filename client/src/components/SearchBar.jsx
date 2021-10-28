@@ -15,14 +15,13 @@ const Search = styled('div')(({ theme }) => ({
 	'&:hover': {
 	  backgroundColor: alpha(theme.palette.common.white, 0.25),
 	},
-	// marginRight: theme.spacing(2),
 	marginLeft: 0,
 	width: '100%',
 	[theme.breakpoints.up('sm')]: {
 	  marginLeft: theme.spacing(1),
 	  width: 'auto',
 	},
-  }));
+  	}));
   
 const SearchIconWrapper = styled('div')(({ theme }) => ({
 	padding: theme.spacing(0, 2),
@@ -32,7 +31,7 @@ const SearchIconWrapper = styled('div')(({ theme }) => ({
 	display: 'flex',
 	alignItems: 'center',
 	justifyContent: 'center',
-  }));
+  	}));
   
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
 	color: 'inherit',
@@ -50,7 +49,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 		},
 	  },
 	},
-  }));
+  	}));
 
 export default function SearchBar({setImages}) {
 	const [searchTerm, setSearchTerm] = useState('');
@@ -64,7 +63,7 @@ export default function SearchBar({setImages}) {
 	}
 
 	const handleSearch = event => {
-		// if (event.key === 'Enter') {
+		if (event.key === 'Enter') {
 		// 	console.log(`Request for search term ${searchTerm} sent`);
 		// 	console.log(typeof parseInt(limit));
 		// 	// axios
@@ -73,7 +72,6 @@ export default function SearchBar({setImages}) {
 		// 	// 			search: searchTerm,
 		// 	// 		}
 		// 	// 	})
-		// }
 		axios
 			.get('http://127.0.0.1:4001/api/v1/nasa', {
 			params: {
@@ -83,12 +81,13 @@ export default function SearchBar({setImages}) {
 			})
 			.then((response) => {
 				console.log(response);
-				// const { data } = response.data;
-				// setImages(data);
+				const { data } = response.data;
+				setImages(data);
 			})
 			.catch((error) => {
 				console.error(error);
 			})
+		}
 	}
 
 	return (
