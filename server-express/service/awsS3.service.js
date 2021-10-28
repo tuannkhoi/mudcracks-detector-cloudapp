@@ -47,7 +47,10 @@ function getUrl(bucket,objectKey){
 		const promise = s3.getSignedUrlPromise('getObject', params);
 		promise.then(function(url) {
 			resolve(url);
-		}, function(err) { console.log(err) });
+		}, function(err) { 
+			console.log(err);
+			reject(err)
+		});
 	})
 }
 
@@ -77,7 +80,12 @@ exports.uploadToS3 = async (localPath, nasa_id) => {
 		ContentType: 'image/jpeg',
 	  }
 
-	await new AWS.S3({apiVersion: '2006-03-01'}).putObject(params).promise();
+	await new AWS.S3({apiVersion: '2006-03-01'}).putObject(params).promise(function(error, data) {
+		if (error) {
+            throw error;
+        }
+	});
+
 	console.log("Successfully uploaded data to S3 Bucket: " + bucket + "/" + nasa_id);
 
 	return getUrl(bucket,nasa_id);

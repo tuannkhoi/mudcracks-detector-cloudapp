@@ -3,7 +3,7 @@ const { downloadImage } = require('../service/downloadImage.service')
 const { getMudCracksPredictions, predictFile } = require('../service/mudcracks.service');
 const { checkFromS3, getUrlFromS3, uploadToS3 } = require('../service/awsS3.service');
 const { checkFromDynamo, readFromDynamo, uploadToDynamo } = require('../service/dynamoDB.service');
-const { returnArray, isNumber } = require('../service/queryHandler.service')
+const { returnArray, handleLimitQuery, handleSearchQuery } = require('../service/queryHandler.service')
 const { removeFiles } = require('../service/fileHandler.service')
 const routePath = `../NASA images/`;
 
@@ -63,8 +63,8 @@ exports.getPredictions = async (req, res, next) =>{
 		// TODO Step 1: Get input from user
 		const userInput = req.query.search;
 		const limit = req.query.limit;
-
-		if (!isNumber(limit) || limit<=0) throw new Error('The limit query should be a positive number');
+		if (!handleSearchQuery(userInput)) throw new Error('The search query should not be empty');
+		if (!handleLimitQuery(limit)) throw new Error('The limit query should be a positive number');
 
 		// TODO Step 2: Using input, get image's link(s) & nasa_id(s) from NASA API
 		const imageData = await getNASAData(userInput);

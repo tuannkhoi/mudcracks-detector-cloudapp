@@ -74,6 +74,7 @@ exports.getMudCracksPredictions = async (imagePath) => {
 		})
 		.catch((error) => {
 			console.log(error);
+			reject(error)
 		})
     });
 }

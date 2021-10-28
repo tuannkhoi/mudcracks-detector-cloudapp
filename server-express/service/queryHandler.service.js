@@ -11,4 +11,12 @@
     }
 }
 
-exports.isNumber = (n) => { return !isNaN(parseFloat(n)) && !isNaN(n - 0) }
+function isNumber(n) { return !isNaN(parseFloat(n)) && !isNaN(n - 0); }
+
+exports.handleLimitQuery = (query) => {
+    return isNumber(query) & query > 0;
+}
+
+exports.handleSearchQuery = (query) => {
+    return query.length > 0;
+}

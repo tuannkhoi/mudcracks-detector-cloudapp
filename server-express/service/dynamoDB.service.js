@@ -2,7 +2,6 @@ require('dotenv').config();
 const AWS = require('aws-sdk');
 AWS.config.update({region:'ap-southeast-2'});
 const dynamodb  = new AWS.DynamoDB.DocumentClient();
-const fs = require('fs');
 const DBName = 'nasa-mudcracks';
 
 exports.uploadToDynamo = async (predictions, nasa_id) => {
@@ -20,7 +19,7 @@ exports.uploadToDynamo = async (predictions, nasa_id) => {
     await dynamodb.put(params).promise(function(err, data) {
         if (err) {
             console.error("Unable to add item. Error JSON:", JSON.stringify(err, null, 2));
-        } else {
+            throw err;
         }
     });
 
@@ -39,7 +38,12 @@ exports.readFromDynamo = async (nasa_id) => {
         ]
     }
 
-    let result = await dynamodb.get(params).promise();
+    let result = await dynamodb.get(params).promise(function(err, data) {
+        if (err) {
+            console.error("Unable to read item. Error JSON:", JSON.stringify(err, null, 2));
+            throw err;
+        }
+    });
     return result.Item.json;
 }
 
@@ -56,7 +60,13 @@ exports.checkFromDynamo = async (nasa_id) => {
     }
 
     var exists = false;
-    let result = await dynamodb.get(params).promise();
+    let result = await dynamodb.get(params).promise(function(err, data) {
+        if (err) {
+            console.error("Unable to read item. Error JSON:", JSON.stringify(err, null, 2));
+            throw err;
+        }
+    });
+
     if (result.Item !== undefined && result.Item !== null) {
       exists = true
     }
