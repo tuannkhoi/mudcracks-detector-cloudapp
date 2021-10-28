@@ -2,7 +2,6 @@ const { getNASAData } = require('../service/nasa.service');
 const { downloadImage } = require('../service/downloadImage.service')
 const { getMudCracksPredictions } = require('../service/mudcracks.service');
 const { getUrlFromS3, checkFromS3, readFromS3, uploadToS3 } = require('../service/awsS3.service');
-const { readFromMongo, uploadToMongo } = require('../service/mongoDB.service');
 const { checkFromDynamo, readFromDynamo, uploadToDynamo } = require('../service/dynamoDB.service');
 const Jimp = require('jimp');
 const { Canvas, createCanvas, Image, ImageData, loadImage } = require('canvas');
@@ -169,7 +168,8 @@ async function getPrediction(imageData) {
 }
 
 exports.getPredictions = async (req, res, next) =>{
-	// TODO Step 1: Get input from user
+	try {
+			// TODO Step 1: Get input from user
 	const userInput = req.query.search;
 	const limit = req.query.limit;
 
@@ -195,5 +195,13 @@ exports.getPredictions = async (req, res, next) =>{
 	await removeFiles(routePath);
 
 	console.log("Finished serving s3Paths");
-	res.status(200).json(s3Paths);
+
+	res.status(200).json({
+		message: "success",
+		data: s3Paths
+		});
+    }
+    catch (error) {
+        res.status(500).json({ message: "success", data: error.message });
+    }
 }

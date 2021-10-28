@@ -1,6 +1,5 @@
 require('dotenv').config();
 const AWS = require('aws-sdk');
-const { TooManyRequests } = require('http-errors');
 const s3 = new AWS.S3({apiVersion: '2006-03-01'});
 const bucket = 'nasa-mudcracks';
 const fs = require('fs');
@@ -38,19 +37,6 @@ async function getObject (bucket, objectKey) {
 	  throw new Error(`Could not retrieve file from S3: ${e.message}`)
 	}
 }
-
-// function getUrl(bucket,objectKey){
-// 	return new Promise((resolve, reject) => {
-// 		const params = {
-// 			Bucket: bucket,
-// 			Key: objectKey 
-// 		  }
-
-// 		const region = 'ap-southeast-2';
-	
-// 		resolve(`https://${params.Bucket}.s3.${region}.amazonaws.com/${params.Key}`) 
-// 	})
-// }
 
 function getUrl(bucket,objectKey){
 	return new Promise((resolve, reject) => {
