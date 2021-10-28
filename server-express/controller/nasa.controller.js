@@ -60,36 +60,36 @@ async function getPrediction(imageData) {
 
 exports.getPredictions = async (req, res, next) =>{
 	try {
-			// TODO Step 1: Get input from user
-	const userInput = req.query.search;
-	const limit = req.query.limit;
+		// TODO Step 1: Get input from user
+		const userInput = req.query.search;
+		const limit = req.query.limit;
 
-	// TODO Step 2: Using input, get image's link(s) & nasa_id(s) from NASA API
-	const imageData = await getNASAData(userInput);
+		// TODO Step 2: Using input, get image's link(s) & nasa_id(s) from NASA API
+		const imageData = await getNASAData(userInput);
 
-	const filteredImageData = imageData.filter(function (image) {
-		return !image['href'].includes('video') &&  !image['href'].includes('audio');
-	})
-	
+		const filteredImageData = imageData.filter(function (image) {
+			return !image['href'].includes('video') &&  !image['href'].includes('audio');
+		})
+		
 
-	const slicedImageData = filteredImageData.slice(0, limit);
-	var s3Paths = [];
+		const slicedImageData = filteredImageData.slice(0, limit);
+		var s3Paths = [];
 
-	await slicedImageData.reduce(async (promise, image) => {     
-		await promise; // wait for the last promise to be resolved
-		result = await getPrediction(image)
-		if(await result){
-			s3Paths.push(result);
-		}
-	}, Promise.resolve());
+		await slicedImageData.reduce(async (promise, image) => {     
+			await promise; // wait for the last promise to be resolved
+			result = await getPrediction(image)
+			if(await result){
+				s3Paths.push(result);
+			}
+		}, Promise.resolve());
 
-	await removeFiles(routePath);
+		await removeFiles(routePath);
 
-	console.log("Finished serving s3Paths");
+		console.log("Finished serving s3Paths");
 
-	res.status(200).json({
-		message: "success",
-		data: s3Paths
+		res.status(200).json({
+			message: "success",
+			data: s3Paths
 		});
     }
     catch (error) {
