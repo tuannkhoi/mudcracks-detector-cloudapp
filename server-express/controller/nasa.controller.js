@@ -2,7 +2,6 @@ const { getNASAData } = require('../service/nasa.service');
 const { downloadImage } = require('../service/downloadImage.service')
 const { getMudCracksPredictions } = require('../service/mudcracks.service');
 const { getUrlFromS3, checkFromS3, readFromS3, uploadToS3 } = require('../service/awsS3.service');
-const { readFromMongo, uploadToMongo } = require('../service/mongoDB.service');
 const { checkFromDynamo, readFromDynamo, uploadToDynamo } = require('../service/dynamoDB.service');
 const Jimp = require('jimp');
 const { Canvas, createCanvas, Image, ImageData, loadImage } = require('canvas');
