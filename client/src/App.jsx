@@ -5,14 +5,14 @@ import ImageCard from './components/ImageCard';
 import './App.css';
  
 export default function App() {
-  const [images, setImages] = useState([])
-  return (
-    <div className="App">
-      <SearchBar setImages={setImages}/>
-      <p>Mud Cracks Detector app</p>
-      <Grid container spacing={2}>
-                {images.map(image => <ImageCard {...images}/>)}
-		    </Grid>
-    </div>
-  );
+	const [images, setImages] = useState([])
+	return (
+		<div className="App">
+			<SearchBar setImages={setImages}/>
+			<p>Mud Cracks Detector app</p>
+			<Grid container spacing={2}>
+				{images.map((image) => <ImageCard url = {image}/>)}
+			</Grid>
+		</div>
+  	);
 }
