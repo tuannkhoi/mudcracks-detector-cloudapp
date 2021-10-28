@@ -1,107 +1,11 @@
-const Jimp = require('jimp');
-const { Canvas, createCanvas, Image, ImageData, loadImage } = require('canvas');
-const { JSDOM } = require('jsdom');
-const { writeFileSync } = require('fs');
-const cv = require('../public/javascripts/libraries/opencv');
-const fs = require('fs');
-const path = require('path');
 const { getNASAData } = require('../service/nasa.service');
 const { downloadImage } = require('../service/downloadImage.service')
-const { getMudCracksPredictions } = require('../service/mudcracks.service');
+const { getMudCracksPredictions, predictFile } = require('../service/mudcracks.service');
 const { checkFromS3, getUrlFromS3, uploadToS3 } = require('../service/awsS3.service');
 const { checkFromDynamo, readFromDynamo, uploadToDynamo } = require('../service/dynamoDB.service');
 const { returnArray } = require('../service/queryHandler.service')
+const { removeFiles } = require('../service/fileHandler.service')
 const routePath = `../NASA images/`;
-
-/**
- * Remove all files in the folder path corresponding to the route path.
- * @param routePath 
- */
- function removeFiles(routePath){
-    return new Promise((resolve, reject)=>{
-
-        // directoryPath = getLocalPath(routePath);
-		directoryPath = routePath;
-
-        fs.readdir(directoryPath, async function (err, files) {
-            if (err) {
-                console.log('Unable to scan directory: ' + err)
-                reject(err)
-            } 
-
-            for (const file of files){
-                fs.unlink(path.join(directoryPath, file), err => {
-                    if (err) reject(err);
-                  });
-            }
-            resolve();
-        });
-        
-    })
-}
-
-/**
- * Use jsdom and node-canvas to define global variables,
- * for cv.matFromImageData() and cv.imshow(), to emulate HTML DOM.
- * Source: https://docs.opencv.org/3.4/dc/de6/tutorial_js_nodejs.html
- */
- function installDOM() {
-    const dom = new JSDOM();
-    global.document = dom.window.document;
-    // The rest enables DOM image and canvas and is provided by node-canvas
-    global.Image = Image;
-    global.HTMLCanvasElement = Canvas;
-    global.ImageData = ImageData;
-    global.HTMLImageElement = Image;
-}
-
-/**
- * POST request to get prediction information.
- * Use Jimp/OpenCV libraries to manipulate and save images.
- * @param localPath The local path to the image file.
- * @param predictions The local path to the predicted image file. 
- */
- function predictFile(localPath,predictions){
-    return new Promise((resolve, reject) => {
-		Jimp.read(localPath)
-		.then(async (image) =>{
-			const src = cv.matFromImageData(image.bitmap); 
-			const w = src.cols;
-			const h = src.rows;    
-			// emulate a minimal HTML DOM
-			installDOM();
-
-			const canvas = createCanvas(w, h);
-			let s = new cv.Scalar(255, 0, 0, 255)
-
-			await predictions.reduce(async (promise, prediction) => {
-				await promise; // wait for the last promise to be resolved
-				
-				if (prediction.probability > 0.1){ // only draw predictions within a probability limit
-					bbox = prediction.boundingBox;
-					x = (bbox.left * w);
-					y = (bbox.top * h);
-					width = ((bbox.width) * w);
-					height = ((bbox.height) * h);
-					
-					cv.rectangle(src, new cv.Point(x, y), new cv.Point(x+width, y+height), s, 3);
-				}
-			}, Promise.resolve());
-			
-
-			cv.imshow(canvas, src); // apply openCV changes to the HTMLCanvasElement object
-			
-			writeFileSync(localPath, canvas.toBuffer('image/jpeg'));
-			src.delete();;
-			setTimeout(function() {
-				resolve();
-			}, 1000); // prevent HTTP 429 
-		})
-		.catch((error) => {
-			console.log(error);
-		})
-    });
-}
 
 async function getPrediction(imageData) {
 	/**
@@ -189,6 +93,6 @@ exports.getPredictions = async (req, res, next) =>{
 		});
     }
     catch (error) {
-        res.status(500).json({ message: "success", data: error.message });
+        res.status(500).json({ message: "failure", data: error.message });
     }
 }
