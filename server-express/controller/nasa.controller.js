@@ -1,8 +1,3 @@
-const { getNASAData } = require('../service/nasa.service');
-const { downloadImage } = require('../service/downloadImage.service')
-const { getMudCracksPredictions } = require('../service/mudcracks.service');
-const { getUrlFromS3, checkFromS3, readFromS3, uploadToS3 } = require('../service/awsS3.service');
-const { checkFromDynamo, readFromDynamo, uploadToDynamo } = require('../service/dynamoDB.service');
 const Jimp = require('jimp');
 const { Canvas, createCanvas, Image, ImageData, loadImage } = require('canvas');
 const { JSDOM } = require('jsdom');
@@ -10,21 +5,13 @@ const { writeFileSync } = require('fs');
 const cv = require('../public/javascripts/libraries/opencv');
 const fs = require('fs');
 const path = require('path');
-
+const { getNASAData } = require('../service/nasa.service');
+const { downloadImage } = require('../service/downloadImage.service')
+const { getMudCracksPredictions } = require('../service/mudcracks.service');
+const { checkFromS3, getUrlFromS3, uploadToS3 } = require('../service/awsS3.service');
+const { checkFromDynamo, readFromDynamo, uploadToDynamo } = require('../service/dynamoDB.service');
+const { returnArray } = require('../service/queryHandler.service')
 const routePath = `../NASA images/`;
-
-/**
- * Return query as array to use array.reduce with async/await.
- * @param query 
- */
- function returnArray(query){
-    if(!Array.isArray(query)){
-        return [query];
-    }
-    else{
-        return query;
-    }
-}
 
 /**
  * Remove all files in the folder path corresponding to the route path.
