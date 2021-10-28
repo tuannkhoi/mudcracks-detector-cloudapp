@@ -1,4 +1,4 @@
-FROM node:14-alpine
+FROM ubuntu:18.04
 
 # Set working directory to /app
 WORKDIR /app
