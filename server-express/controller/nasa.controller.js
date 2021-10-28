@@ -7,6 +7,10 @@ const { returnArray, handleLimitQuery, handleSearchQuery } = require('../service
 const { removeFiles } = require('../service/fileHandler.service')
 const routePath = `../NASA images/`;
 
+/**
+ * Serve s3 link for an image 
+ * @param imageData 
+ */
 async function getPrediction(imageData) {
 	/**
 	 * Get input from user
@@ -28,19 +32,15 @@ async function getPrediction(imageData) {
 	 * 		serve data (imgLink) from S3
 	 * Send image_link to client
 	 */
-	// TODO if imageData[i]['links'].length > 1 => skip
 	const url = imageData['links'][0]['href'];
 
 	const nasa_id = imageData['data'][0]['nasa_id'] + '.jpg';
 
-	var s3Path;
+	let s3Path;
 	
-	// if nasa_id is found in s3
 	if(await checkFromS3(nasa_id)){
-		//serve image link  from s3
 		s3Path = await getUrlFromS3(nasa_id);
 	}
-	// else if nasa_id is found in DynamoDB
 	else if (await checkFromDynamo(nasa_id)) {
 		const localPath = await downloadImage(url, nasa_id);	
 		const predictions = await readFromDynamo(nasa_id);
@@ -58,22 +58,20 @@ async function getPrediction(imageData) {
 	return s3Path;
 }
 
+
 exports.getPredictions = async (req, res, next) =>{
 	try {
-		// TODO Step 1: Get input from user
 		const userInput = req.query.search;
 		const limit = req.query.limit;
 		if (!handleSearchQuery(userInput)) throw new Error('The search query should not be empty');
 		if (!handleLimitQuery(limit)) throw new Error('The limit query should be a positive number');
 
-		// TODO Step 2: Using input, get image's link(s) & nasa_id(s) from NASA API
 		const imageData = await getNASAData(userInput);
 
 		const filteredImageData = imageData.filter(function (image) {
 			return !image['href'].includes('video') &&  !image['href'].includes('audio');
 		})
 		
-
 		const slicedImageData = filteredImageData.slice(0, limit);
 		let s3Paths = [];
 
@@ -88,7 +86,7 @@ exports.getPredictions = async (req, res, next) =>{
 		await removeFiles(routePath);
 		console.log("Finished serving s3Paths");
 
-		if (s3Paths.length <= 0) throw new Error('There is no result from NASA API');
+		if (s3Paths.length <= 0) throw new Error('There is no result for that query from NASA API');
 
 		res.status(200).json({
 			message: "success",

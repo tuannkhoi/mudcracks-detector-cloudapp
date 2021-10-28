@@ -2,7 +2,7 @@ const Jimp = require('jimp');
 
 /**
  * Save the image to the local folder.
- * @param imageUrl The url of the image.
+ * @param url The url of the image.
  * @param nasa_id The image's nasa_id.
  */
  exports.downloadImage = (url,nasa_id) => {

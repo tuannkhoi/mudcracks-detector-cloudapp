@@ -1,8 +1,8 @@
 const axios = require('axios');
 
 /**
- * @param {string} userInput the user's input to the search bar
- * @returns {array} array of results
+ * @param {string} userInput the user's input from the search bar
+ * @returns {array} array of results from NASA
  */
 exports.getNASAData = async (userInput) => {	
 	return new Promise((resolve, reject) => {
@@ -17,7 +17,7 @@ exports.getNASAData = async (userInput) => {
         })
         .catch((error) => {
             console.log(error);
-            reject(error);
+            reject(new Error(`Could not retrieve data from NASA: ${error.message}`));
         });
     });
 }

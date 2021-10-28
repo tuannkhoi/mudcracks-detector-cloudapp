@@ -14,7 +14,7 @@ const path = require('path');
         fs.readdir(directoryPath, async function (err, files) {
             if (err) {
                 console.log('Unable to scan directory: ' + err)
-                reject(err)
+                reject(new Error(`Could not scan directory: ${err.message}`))
             } 
 
             for (const file of files){

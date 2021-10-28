@@ -6,36 +6,18 @@ const fs = require('fs');
 const region = 'ap-southeast-2';
 
 async function checkObject (bucket, objectKey) {
-	var success = true;
-	try {
-	  const params = {
+	let success = true;
+
+	const params = {
 		Bucket: bucket,
 		Key: objectKey 
-	  }
+	}
 
-	  const data = await s3.headObject(params).promise().catch((error) => {
+	const data = await s3.headObject(params).promise().catch((error) => {
 		success = false;
-	  });
+	});
 
-	  return success;
-	} catch (e) {
-	  throw new Error(`Could not retrieve file from S3: ${e.message}`)
-	}
-}
-
-async function getObject (bucket, objectKey) {
-	try {
-	  const params = {
-		Bucket: bucket,
-		Key: objectKey 
-	  }
-  
-	  const data = await s3.getObject(params).promise();
-  
-	  return data.Body.toString('utf-8');
-	} catch (e) {
-	  throw new Error(`Could not retrieve file from S3: ${e.message}`)
-	}
+	return success;
 }
 
 function getUrl(bucket,objectKey){
@@ -60,12 +42,6 @@ exports.getUrlFromS3 = async (nasa_id) => {
 
 exports.checkFromS3 = async (nasa_id) => {
 	const resultJSON = await checkObject(bucket, nasa_id);
-
-	return resultJSON;
-}
-
-exports.readFromS3 = async (nasa_id) => {
-	const resultJSON = await getObject(bucket, nasa_id);
 
 	return resultJSON;
 }
