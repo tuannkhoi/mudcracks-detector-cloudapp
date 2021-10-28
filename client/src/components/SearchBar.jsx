@@ -66,12 +66,6 @@ export default function SearchBar({setImages}) {
 		if (event.key === 'Enter') {
 		// 	console.log(`Request for search term ${searchTerm} sent`);
 		// 	console.log(typeof parseInt(limit));
-		// 	// axios
-		// 	// 	.get('/api/v1/nasa', {
-		// 	// 		params: {
-		// 	// 			search: searchTerm,
-		// 	// 		}
-		// 	// 	})
 		axios
 			.get('http://127.0.0.1:4001/api/v1/nasa', {
 			params: {

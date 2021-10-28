@@ -5,7 +5,7 @@ import ImageCard from './components/ImageCard';
 import './App.css';
  
 export default function App() {
-	const [images, setImages] = useState([])
+	const [images, setImages] = useState([]);
 	return (
 		<div className="App">
 			<SearchBar setImages={setImages}/>

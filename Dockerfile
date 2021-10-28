@@ -1,13 +1,11 @@
-FROM node:erbium
+FROM node:14-alpine
+
+# Set working directory to /app
+WORKDIR /app
+
 
 # Copy app source
-COPY /mudcracksdetection /src
-
-# Set working directory to /src
-WORKDIR /src
-
-# Install app dependencies
-RUN npm install
+COPY . .
 
 # Export port to outside world
 EXPOSE 3000
