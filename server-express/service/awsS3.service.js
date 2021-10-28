@@ -39,16 +39,29 @@ async function getObject (bucket, objectKey) {
 	}
 }
 
+// function getUrl(bucket,objectKey){
+// 	return new Promise((resolve, reject) => {
+// 		const params = {
+// 			Bucket: bucket,
+// 			Key: objectKey 
+// 		  }
+
+// 		const region = 'ap-southeast-2';
+	
+// 		resolve(`https://${params.Bucket}.s3.${region}.amazonaws.com/${params.Key}`) 
+// 	})
+// }
+
 function getUrl(bucket,objectKey){
 	return new Promise((resolve, reject) => {
 		const params = {
 			Bucket: bucket,
 			Key: objectKey 
 		  }
-
-		const region = 'ap-southeast-2';
-	
-		resolve(`https://${params.Bucket}.s3.${region}.amazonaws.com/${params.Key}`) 
+		const promise = s3.getSignedUrlPromise('getObject', params);
+		promise.then(function(url) {
+			resolve(url);
+		}, function(err) { console.log(err) });
 	})
 }
 
@@ -80,6 +93,6 @@ exports.uploadToS3 = async (localPath, nasa_id) => {
 
 	await new AWS.S3({apiVersion: '2006-03-01'}).putObject(params).promise();
 	console.log("Successfully uploaded data to S3 Bucket: " + bucket + "/" + nasa_id);
-	
-	return (`https://${params.Bucket}.s3.${region}.amazonaws.com/${params.Key}`);
+
+	return getUrl(bucket,nasa_id);
 }
