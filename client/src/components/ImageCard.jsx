@@ -3,7 +3,6 @@ import Card from '@mui/material/Card';
 import CardMedia from '@mui/material/CardMedia';
 import Grid from "@mui/material/Grid";
 
-
 export default function ImageCard(props) {
 	return (
 		<Grid item xs={12} md={6} lg={4}>
@@ -11,7 +10,7 @@ export default function ImageCard(props) {
 			<CardMedia
 				component="img"
 				height="500"
-				image={props}
+				image={props.url}
 			/>
 			</Card>
         </Grid>
