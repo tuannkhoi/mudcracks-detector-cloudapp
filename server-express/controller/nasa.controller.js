@@ -3,7 +3,7 @@ const { downloadImage } = require('../service/downloadImage.service')
 const { getMudCracksPredictions, predictFile } = require('../service/mudcracks.service');
 const { checkFromS3, getUrlFromS3, uploadToS3 } = require('../service/awsS3.service');
 const { checkFromDynamo, readFromDynamo, uploadToDynamo } = require('../service/dynamoDB.service');
-const { returnArray } = require('../service/queryHandler.service')
+const { returnArray, isNumber } = require('../service/queryHandler.service')
 const { removeFiles } = require('../service/fileHandler.service')
 const routePath = `../NASA images/`;
 
@@ -64,6 +64,8 @@ exports.getPredictions = async (req, res, next) =>{
 		const userInput = req.query.search;
 		const limit = req.query.limit;
 
+		if (!isNumber(limit) || limit<=0) throw new Error('The limit query should be a positive number');
+
 		// TODO Step 2: Using input, get image's link(s) & nasa_id(s) from NASA API
 		const imageData = await getNASAData(userInput);
 
@@ -73,7 +75,7 @@ exports.getPredictions = async (req, res, next) =>{
 		
 
 		const slicedImageData = filteredImageData.slice(0, limit);
-		var s3Paths = [];
+		let s3Paths = [];
 
 		await slicedImageData.reduce(async (promise, image) => {     
 			await promise; // wait for the last promise to be resolved
@@ -84,8 +86,9 @@ exports.getPredictions = async (req, res, next) =>{
 		}, Promise.resolve());
 
 		await removeFiles(routePath);
-
 		console.log("Finished serving s3Paths");
+
+		if (s3Paths.length <= 0) throw new Error('There is no result from NASA API');
 
 		res.status(200).json({
 			message: "success",
