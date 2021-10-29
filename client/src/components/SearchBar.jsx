@@ -72,14 +72,12 @@ export default function SearchBar({setImages, setErrMsg}) {
 			}
 			})
 			.then((response) => {
-				// console.log(response.status);
 				const { data } = response.data;
 				setImages(data);
 				setErrMsg(null);
 				
 			})
 			.catch((error) => {
-				console.error(error.response.data.errorMessage);
 				setErrMsg(error.response.data.errorMessage);
 			})
 		}
