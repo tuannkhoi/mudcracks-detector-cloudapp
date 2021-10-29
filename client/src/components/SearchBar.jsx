@@ -51,21 +51,19 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 	},
   	}));
 
-export default function SearchBar({setImages}) {
+export default function SearchBar({setImages, setErrMsg}) {
 	const [searchTerm, setSearchTerm] = useState('');
 	const handleTermChange = event => {
 		setSearchTerm(event.target.value);
 	}
 
-	const [limit, setLimit] = useState(4);
+	const [limit, setLimit] = useState();
 	const handleLimitChange = event => {
 		setLimit(event.target.value);
 	}
 
 	const handleSearch = event => {
 		if (event.key === 'Enter') {
-		// 	console.log(`Request for search term ${searchTerm} sent`);
-		// 	console.log(typeof parseInt(limit));
 		axios
 			.get('http://127.0.0.1:4001/api/v1/nasa', {
 			params: {
@@ -74,12 +72,15 @@ export default function SearchBar({setImages}) {
 			}
 			})
 			.then((response) => {
-				console.log(response);
+				// console.log(response.status);
 				const { data } = response.data;
 				setImages(data);
+				setErrMsg(null);
+				
 			})
 			.catch((error) => {
-				console.error(error);
+				console.error(error.response.data.errorMessage);
+				setErrMsg(error.response.data.errorMessage);
 			})
 		}
 	}
@@ -99,7 +100,7 @@ export default function SearchBar({setImages}) {
 			  </Typography>
 			  <Search>
 				<StyledInputBase
-					placeholder="Image number"
+					placeholder="Number of images"
 					inputProps={{ 'aria-label': 'number' }}
 					value={limit}
 					onChange={handleLimitChange}

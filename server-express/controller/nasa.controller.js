@@ -64,7 +64,7 @@ exports.getPredictions = async (req, res, next) =>{
 		const userInput = req.query.search;
 		const limit = req.query.limit;
 		if (!handleSearchQuery(userInput)) throw new Error('The search query should not be empty');
-		if (!handleLimitQuery(limit)) throw new Error('The limit query should be a positive number');
+		if (!handleLimitQuery(limit)) throw new Error('The limit query should be a positive integer');
 
 		const imageData = await getNASAData(userInput);
 
@@ -94,6 +94,6 @@ exports.getPredictions = async (req, res, next) =>{
 		});
     }
     catch (error) {
-        res.status(500).json({ message: "failure", data: error.message });
+        res.status(500).json({ message: "failure", errorMessage: error.message });
     }
 }
