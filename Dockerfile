@@ -1,19 +1,4 @@
-FROM ubuntu:18.04
-
-RUN apt-get -y update
-
-# Install general dependencies
-RUN apt-get install -y build-essential curl wget gnupg
-
-# Install Python
-RUN apt-get install -y python3.8 python3-pip libgl1
-# libgl1 = dependency of python-opencv
-# Upgrade pip3
-RUN pip3 install --upgrade pip
-
-# Install NodeJS 14
-RUN curl -sL https://deb.nodesource.com/setup_14.x  | bash -
-RUN apt-get install -y nodejs
+FROM nikolaik/python-nodejs:python3.8-nodejs14
 
 # Set working directory to /mudcracks
 WORKDIR /mudcracks
@@ -31,14 +16,13 @@ RUN npm i
 
 # Install server-flask dependencies
 WORKDIR /mudcracks/server-flask
-RUN pip3 install -r requirements.txt
-# Fix locale error when flask run / error due to using python <= 3.6
-ENV LC_ALL="en_US.utf-8"
-ENV LANG="en_US.utf-8"
+RUN pip install -r requirements.txt
+RUN pip install https://storage.googleapis.com/tensorflow/linux/cpu/tensorflow_cpu-2.6.0-cp38-cp38-manylinux2010_x86_64.whl
 
 # Export port to outside world
 EXPOSE 4001
 
 # Start command as per package.json
 WORKDIR /mudcracks/server-express
-CMD npm-run-all --parallel startExpress startFlask
+# Start command as per package.json
+CMD ["npm", "startAll"]
