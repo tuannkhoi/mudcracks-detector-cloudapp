@@ -36,12 +36,9 @@ RUN pip3 install -r requirements.txt
 ENV LC_ALL="en_US.utf-8"
 ENV LANG="en_US.utf-8"
 
-
-
-
 # Export port to outside world
 EXPOSE 4001
 
 # Start command as per package.json
-WORKDIR /mudcracks
-CMD ["npm", "start"]
+WORKDIR /mudcracks/server-express
+CMD npm-run-all --parallel startExpress startFlask
