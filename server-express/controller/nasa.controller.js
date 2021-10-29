@@ -11,7 +11,7 @@ const routePath = `../NASA images/`;
  * Serve s3 link for an image 
  * @param imageData 
  */
-async function getPrediction(imageData) {
+async function getPrediction(req, imageData) {
 	/**
 	 * Get input from user
 	 * Use input, get image's URL and nasa_id from Nasa API
@@ -49,7 +49,7 @@ async function getPrediction(imageData) {
 	}
 	else {
 		const localPath = await downloadImage(url, nasa_id);	
-		const flaskResponse = await getMudCracksPredictions(localPath);
+		const flaskResponse = await getMudCracksPredictions(req, localPath);
 		const predictions = await returnArray(flaskResponse['data']);
 		await uploadToDynamo(predictions, nasa_id);
 		s3Path = await uploadToS3(localPath, nasa_id);
@@ -77,7 +77,7 @@ exports.getPredictions = async (req, res, next) =>{
 
 		await slicedImageData.reduce(async (promise, image) => {     
 			await promise; // wait for the last promise to be resolved
-			result = await getPrediction(image)
+			result = await getPrediction(req, image)
 			if(await result){
 				s3Paths.push(result);
 			}

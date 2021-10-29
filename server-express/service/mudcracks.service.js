@@ -4,13 +4,14 @@ const cv = require('../public/javascripts/libraries/opencv');
 const { Canvas, createCanvas, Image, ImageData, loadImage } = require('canvas');
 const { JSDOM } = require('jsdom');
 const { writeFileSync } = require('fs');
+const flaskPort = 5000;
 
 /**
  * GET request to Flask server for prediction information.
  * @param imagePath The local path to the image file.
  */
-exports.getMudCracksPredictions = async (imagePath) => {
-	const MUDCRACKS_API_URL = 'http://127.0.0.1:5000/predict';
+exports.getMudCracksPredictions = async (req, imagePath) => {
+	const MUDCRACKS_API_URL = `${req.protocol}://${req.hostname}:${flaskPort}/predict`;
 	const predictions = await axios.get(MUDCRACKS_API_URL, {
 		params: {
 			imagePath: imagePath,
