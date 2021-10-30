@@ -65,7 +65,7 @@ export default function SearchBar({setImages, setErrMsg}) {
 	const handleSearch = event => {
 		if (event.key === 'Enter') {
 		axios
-			.get('http://127.0.0.1:4001/api/v1/nasa', {
+			.get('/api/v1/nasa', {
 			params: {
 				search: searchTerm,
 				limit,
@@ -119,5 +119,5 @@ export default function SearchBar({setImages, setErrMsg}) {
 			</Toolbar>
 		  </AppBar>
 		</Box>
-	  );
+	);
 }

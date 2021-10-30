@@ -1,19 +1,7 @@
-FROM ubuntu:18.04
+FROM nikolaik/python-nodejs:python3.8-nodejs14
 
+# Update
 RUN apt-get -y update
-
-# Install general dependencies
-RUN apt-get install -y build-essential curl wget gnupg
-
-# Install Python
-RUN apt-get install -y python3.8 python3-pip libgl1
-# libgl1 = dependency of python-opencv
-# Upgrade pip3
-RUN pip3 install --upgrade pip
-
-# Install NodeJS 14
-RUN curl -sL https://deb.nodesource.com/setup_14.x  | bash -
-RUN apt-get install -y nodejs
 
 # Set working directory to /mudcracks
 WORKDIR /mudcracks
@@ -31,14 +19,14 @@ RUN npm i
 
 # Install server-flask dependencies
 WORKDIR /mudcracks/server-flask
-RUN pip3 install -r requirements.txt
-# Fix locale error when flask run / error due to using python <= 3.6
-ENV LC_ALL="en_US.utf-8"
-ENV LANG="en_US.utf-8"
+RUN pip install -r requirements.txt
+# libgl1 for opencv
+RUN apt-get install -y libgl1
+
 
 # Export port to outside world
-EXPOSE 4001
+# EXPOSE 4001
 
-# Start command as per package.json
+# Start 2 servers
 WORKDIR /mudcracks/server-express
-CMD npm-run-all --parallel startExpress startFlask
+CMD npm run startAll
