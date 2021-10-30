@@ -4,6 +4,7 @@ from PIL import Image
 from flask import Flask, jsonify, request
 from urllib.parse import unquote
 import predict
+import asyncio
 
 model = predict.get_model()
 
@@ -35,20 +36,26 @@ def index():
     return 'Mud cracks detector - Flask server'
 
 @app.route('/predict', methods=['GET', 'POST'])
-def infer_image():
+async def infer_image():
     # Get image path from request
     path = request.args.get('imagePath')
 
     # Read image from path
     img = Image.open(path)
 
+    asyncio.sleep(3)
+
     # ML model predict the image
     predictions = model.predict_image(img)
     print(predictions)
 
+    asyncio.sleep(3)
+
     # Draw bounding box for the image
     # The new image (with bounding box) will replace the current one at path
     drawBoundingBox(path, predictions)
+
+    asyncio.sleep(3)
 
     # Return the predictions
     return jsonify(predictions)
