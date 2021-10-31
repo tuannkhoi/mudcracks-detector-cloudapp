@@ -11,7 +11,7 @@ const flaskPort = 5000;
  * @param imagePath The local path to the image file.
  */
 exports.getMudCracksPredictions = async (req, imagePath) => {
-	const MUDCRACKS_API_URL = `${req.protocol}://${req.hostname}:${flaskPort}/predict`;
+	const MUDCRACKS_API_URL = `http://localhost:5000/predict`;
 	const predictions = await axios.get(MUDCRACKS_API_URL, {
 		params: {
 			imagePath: imagePath,
