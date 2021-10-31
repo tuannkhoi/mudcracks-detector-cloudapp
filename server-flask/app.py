@@ -27,9 +27,9 @@ async def drawBoundingBox(path, predictions):
         cv2.putText(image_cv, label, (b[0], b[1] - 10), cv2.FONT_HERSHEY_PLAIN, 1, (100, 0, 0), 3)
         cv2.putText(image_cv, label, (b[0], b[1] - 10), cv2.FONT_HERSHEY_PLAIN, 1, (255, 255, 255), 1)
     
-    asyncio.sleep(1)
+    await asyncio.sleep(1)
     cv2.imwrite(path, image_cv) # Replace the current image at existing path with the new one (with bounding box)
-    asyncio.sleep(1)
+    await asyncio.sleep(2)
 
 app = Flask(__name__)
 
@@ -45,7 +45,7 @@ async def infer_image():
     # Read image from path
     img = Image.open(path)
 
-    asyncio.sleep(1)
+    await asyncio.sleep(1)
 
     # ML model predict the image
     predictions = model.predict_image(img)
@@ -55,7 +55,7 @@ async def infer_image():
     # The new image (with bounding box) will replace the current one at path
     drawBoundingBox(path, predictions)
 
-    asyncio.sleep(1)
+    await asyncio.sleep(3)
 
     # Return the predictions
     return jsonify(predictions)
