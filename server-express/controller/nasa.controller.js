@@ -1,6 +1,6 @@
 const { getNASAData } = require('../service/nasa.service');
 const { downloadImage } = require('../service/downloadImage.service')
-const { getMudCracksPredictions, predictFile } = require('../service/mudcracks.service');
+const { getMudCracksPredictions, drawMudCracksPredictions } = require('../service/mudcracks.service');
 const { checkFromS3, getUrlFromS3, uploadToS3 } = require('../service/awsS3.service');
 const { checkFromDynamo, readFromDynamo, uploadToDynamo } = require('../service/dynamoDB.service');
 const { returnArray, handleLimitQuery, handleSearchQuery } = require('../service/queryHandler.service')
@@ -44,12 +44,12 @@ async function getPrediction(req, imageData) {
 	else if (await checkFromDynamo(nasa_id)) {
 		const localPath = await downloadImage(url, nasa_id);	
 		const predictions = await readFromDynamo(nasa_id);
-		await predictFile(localPath, predictions);
+		await drawMudCracksPredictions(localPath, predictions);
 		s3Path = await uploadToS3(localPath, nasa_id);
 	}
 	else {
 		const localPath = await downloadImage(url, nasa_id);	
-		const flaskResponse = await getMudCracksPredictions(req, localPath);
+		const flaskResponse = await getMudCracksPredictions(localPath);
 		const predictions = await returnArray(flaskResponse['data']);
 		await uploadToDynamo(predictions, nasa_id);
 		s3Path = await uploadToS3(localPath, nasa_id);
