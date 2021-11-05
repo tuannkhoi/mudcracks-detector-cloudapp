@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "startExpress": "nodemon ./bin/www",
-    "startFlask": "cd ../server-flask && flask run",
+    "startFlask": "cd ../server-flask && flask run --host 0.0.0.0",
     "startAll": "npm-run-all --parallel startExpress startFlask"
   },
   "dependencies": {
