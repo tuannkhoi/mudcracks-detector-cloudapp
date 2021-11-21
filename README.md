@@ -32,11 +32,13 @@ To use the application, the user must enter the query and the number of images t
 ![Sample-result](images/sample-result.png)
 
 ### Setup
+While the example usage is about mud cracks detection, the web application also works with every [TensorFlow model](https://docs.microsoft.com/en-us/azure/cognitive-services/custom-vision-service/export-model-python). A TensorFlow model is represented by two files, model.pb and labels.txt.
 
 Prequisites:
 
 1. Register for an AWS account 
 2. Create a DynamoDB database and a S3 Bucket
+3. Add model.pb and labels.txt in server-flask 
 
 Installation guides:
 
