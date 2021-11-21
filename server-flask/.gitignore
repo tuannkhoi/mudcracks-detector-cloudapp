@@ -12,3 +12,7 @@ htmlcov/
 dist/
 build/
 *.egg-info/
+
+# ignore model
+model.pb
+labels.txt
