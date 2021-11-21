@@ -16,10 +16,12 @@ Using our web application, the user will be able to search for images in NASA’
 ## Scaling performance
 ### Scaling Policy
 ![ScalingPolicy](images/scaling-policy.png)
-The application scales out when the average CPU utilization is over 20%, scaling between one and three instances. While 20% is a small benchmark for CPU performance, it successfully demonstrates the auto-scaling performance of this application. For achieving higher CPU performance such as 60%, the application is more likely to crash due to Tensorflow exceeding the memory of the t3.medium instance, before using the CPU for prediction capabilities. Therefore, average CPU utilization at 20% would ensure stabilize the performance of the application. 
-### CPU Performance
-![CPUPerformance](images/cpu-performance.png)
 ![InServiceInstance](images/in-service-instance.png)
+The application scales out when the average CPU utilization is over 20%, scaling between one and three instances. While 20% is a small benchmark for CPU performance, it successfully demonstrates the auto-scaling performance of this application. For achieving higher CPU performance such as 60%, the application is more likely to crash due to Tensorflow exceeding the memory of the t3.medium instance, before using the CPU for prediction capabilities. Therefore, average CPU utilization at 20% would ensure stabilize the performance of the application. 
+### Scaling Performance
+![CPUPerformance](images/cpu-performance.png)
+![TargetResponseTime](images/target-response-time.png)
+
 
 
 ## User guide
@@ -50,14 +52,19 @@ git clone https://github.com/phuongnamly/CAB420-MachineLearning.git
 
 3. Configure [AWS credentials](https://docs.aws.amazon.com/sdk-for-java/v1/developer-guide/setup-credentials.html)
 
-4. Use docker build and docker run
+```bash
+set AWS_ACCESS_KEY_ID=your_access_key_id
+set AWS_SECRET_ACCESS_KEY=your_secret_access_key
+```
+
+4. Use Docker to build and run the image
 
 ```bash
 docker build -t mudscrack .
 docker run -p 80:4001 mudscrack
 ```
 
-5. Run the web localhost
+5. Run the application on localhost
 ```bash
 http://localhost:4001
 ```
