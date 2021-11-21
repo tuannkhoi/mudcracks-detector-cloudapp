@@ -27,6 +27,7 @@ The application scales out when the average CPU utilization is over 20%, scaling
 ## User guide
 
 To use the application, the user must enter the query and the number of images they want to see. 
+
 ![Sample-result](images/sample-result.png)
 
 ### Setup
