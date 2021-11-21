@@ -2,7 +2,7 @@
 Mudcracks detector is a scalable web application for detecting mudcracks images. The application has a stateless architecture and uses two persistence services: DynamoDB and S3 Bucket.
 
 ## Purpose
-NASA are interested in mud cracks, as they are signs of a watery ancient past on Mars. QUT Space White Belly Sea Eagles Team has been developing a model, trained with 600 images of mud cracks on Earth, for detecting mud cracks in general. The model is available as an Azure Custom Vision endpoint. This leads to the idea of developing a web application for predicting images, along with scalability and persistence.
+NASA are interested in mud cracks, as they are signs of a watery ancient past on Mars. [QUT Space White Belly Sea Eagles Team has been developing a model](https://research.qut.edu.au/qcr/2021/09/03/search-for-early-signs-of-life-on-other-planets/), trained with 600 images of mud cracks on Earth, for detecting mud cracks in general. The model is available as an Azure Custom Vision endpoint. This leads to the idea of developing a web application for predicting images, along with scalability and persistence.
 Using our web application, the user will be able to search for images in NASA’s media bank and then, our machine learning model will predict whether there are mud cracks in those images.
 
 ## Data Flow Diagram
