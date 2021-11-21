@@ -17,6 +17,7 @@ Using our web application, the user will be able to search for images in NASA’
 ### Scaling Policy
 ![ScalingPolicy](images/scaling-policy.png)
 ![InServiceInstance](images/in-service-instance.png)
+
 The application scales out when the average CPU utilization is over 20%, scaling between one and three instances. While 20% is a small benchmark for CPU performance, it successfully demonstrates the auto-scaling performance of this application. For achieving higher CPU performance such as 60%, the application is more likely to crash due to Tensorflow exceeding the memory of the t3.medium instance, before using the CPU for prediction capabilities. Therefore, average CPU utilization at 20% would ensure stabilize the performance of the application. 
 ### Scaling Performance
 ![CPUPerformance](images/cpu-performance.png)
